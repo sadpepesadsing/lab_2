@@ -1,6 +1,7 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QVBoxLayout, QLineEdit, QPushButton, QListWidget, QDialog, QTextEdit, QWidget
-
+from PyQt6.QtWidgets import QApplication, QVBoxLayout, QLineEdit, QPushButton, QListWidget, QDialog, QTextEdit, QWidget, QMenu, QMessageBox
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QAction
 
 class NoteApp(QWidget):
     def __init__(self):
@@ -58,6 +59,9 @@ class NoteApp(QWidget):
         self.note_list.setSpacing(3)
         self.layout.addWidget(self.note_list)
 
+        self.note_list.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.note_list.customContextMenuRequested.connect(self.show_context_menu)
+
         # Поле для добавления заметки
         self.add_field = QLineEdit(self)
         self.add_field.setPlaceholderText("Введите название новой заметки")
@@ -73,6 +77,55 @@ class NoteApp(QWidget):
         # Подключение сигналов
         self.add_button.clicked.connect(self.add_note)
         self.note_list.itemClicked.connect(self.open_note)
+
+    def show_context_menu(self, pos):
+        # Получаем элемент списка, на котором был клик
+        item = self.note_list.itemAt(pos)
+        if not item:
+            return
+
+        context_menu = QMenu(self)
+
+        # Действие для удаления заметки
+        delete_action = QAction("Удалить", self)
+        delete_action.triggered.connect(lambda: self.delete_note(item))
+        context_menu.addAction(delete_action)
+
+        context_menu.setStyleSheet("""
+            QMenu {
+                background-color: white;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            QMenu::item {
+                padding: 10px;
+                color: #c43131;
+                background-color: white;
+                font-size: 14px;
+            }
+
+            QMenu::item:selected {
+                background-color: #c43131;
+                color: white;
+            }
+
+            QMenu::item:disabled {
+                color: #ccc;
+            }
+
+            QMenu::separator {
+                height: 1px;
+                background-color: #ccc;
+            }
+        """)
+
+        # Показываем меню
+        context_menu.exec(self.note_list.mapToGlobal(pos))
+
+    def delete_note(self, item):
+        # Удаляем выбранную заметку из списка
+        self.note_list.takeItem(self.note_list.row(item))
 
     def add_note(self):
         """Добавление новой заметки"""
