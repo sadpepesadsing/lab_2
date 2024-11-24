@@ -2,6 +2,8 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QVBoxLayout, QLineEdit, QPushButton, QListWidget, QWidget, QMenu
 from NoteEditor import NoteEditor
+from JSONManager import NoteManager
+
 
 class NoteApp(QWidget):
     def __init__(self, notes: dict = {}):
@@ -128,6 +130,8 @@ class NoteApp(QWidget):
     def delete_note(self, item):
         # Удаляем выбранную заметку из списка
         self.note_list.takeItem(self.note_list.row(item))
+        self.notes.pop(item.text())
+        NoteManager().save_notes(self.notes) #Сохранение
 
     def add_note(self):
         """Добавление новой заметки"""
@@ -136,6 +140,7 @@ class NoteApp(QWidget):
             self.notes[title] = ""  # Пустой текст заметки
             self.note_list.addItem(title)
             self.add_field.clear()
+            NoteManager().save_notes(self.notes)
 
     def open_note(self, item):
         """Открытие окна для редактирования заметки"""
@@ -144,3 +149,4 @@ class NoteApp(QWidget):
         dialog = NoteEditor(title, content)
         if dialog.exec():  # Если нажали "Сохранить"
             self.notes[title] = dialog.text_edit.toPlainText()  # Сохраняем текст
+            NoteManager().save_notes(self.notes)

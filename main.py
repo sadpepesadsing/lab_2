@@ -6,8 +6,8 @@ from NoteApp import NoteApp
 from JSONManager import NoteManager
 
 # Запуск приложения
-app = QApplication(sys.argv)
 manager = NoteManager()
+app = QApplication(sys.argv)
 window = NoteApp(manager.notes)
 window.show()
 sys.exit(app.exec())
