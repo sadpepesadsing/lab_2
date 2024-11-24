@@ -1,54 +1,17 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QVBoxLayout, QLineEdit, QPushButton, QListWidget, QWidget, QMenu
+
 from NoteEditor import NoteEditor
 from JSONManager import NoteManager
+import ContextMenuStyle
+import SheetStyle
 
 
 class NoteApp(QWidget):
     def __init__(self, notes: dict = {}):
         super().__init__()
-        self.setStyleSheet("""
-            QWidget {
-                background-color: #f7f7f7;
-                font-family: Arial;
-                font-size: 14px;
-                border-radius: 4px;
-
-            }
-            QListWidget {
-                background-color: white;
-                border: 1px solid #000000;
-                padding: 5px;
-            }
-            QListWidget::item {
-                padding: 10px;
-                border: 1px solid #000000;
-                border-radius: 4px;
-            }
-            QListWidget::item:selected {
-                background-color: #545252;
-                color: white;
-            }
-            QLineEdit {
-                border: 1px solid #000000;
-                padding: 5px;
-                border-radius: 4px;
-            }
-            QPushButton {
-                background-color: black;
-                color: white;
-                border: none;
-                padding: 8px 15px;
-                border-radius: 5px;
-            }
-            QPushButton:hover {
-                background-color: grey;
-            }
-            QPushButton:pressed {
-                        background-color: #2b2b2b;
-                    }
-        """)
+        self.setStyleSheet(SheetStyle.style)
 
         self.setWindowTitle("Менеджер заметок")
         self.setGeometry(100, 100, 400, 600)
@@ -95,34 +58,7 @@ class NoteApp(QWidget):
         delete_action.triggered.connect(lambda: self.delete_note(item))
         context_menu.addAction(delete_action)
 
-        context_menu.setStyleSheet("""
-            QMenu {
-                background-color: white;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-            }
-
-            QMenu::item {
-                padding: 10px;
-                color: #c43131;
-                background-color: white;
-                font-size: 14px;
-            }
-
-            QMenu::item:selected {
-                background-color: #c43131;
-                color: white;
-            }
-
-            QMenu::item:disabled {
-                color: #ccc;
-            }
-
-            QMenu::separator {
-                height: 1px;
-                background-color: #ccc;
-            }
-        """)
+        context_menu.setStyleSheet(ContextMenuStyle.style)
 
         # Показываем меню
         context_menu.exec(self.note_list.mapToGlobal(pos))
