@@ -25,14 +25,3 @@ class NoteManager:
         """Сохраняет заметки в JSON-файл."""
         with open(self.filename, "w", encoding="utf-8") as file:
             json.dump(notes, file, indent=4, ensure_ascii=False)
-
-    def add_note(self, title, content):
-        """Добавляет новую заметку."""
-        self.notes[title] = content
-        self.save_notes()
-
-    def delete_note(self, title):
-        """Удаляет заметку."""
-        if title in self.notes:
-            del self.notes[title]
-            self.save_notes()
